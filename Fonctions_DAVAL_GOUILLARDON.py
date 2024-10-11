@@ -3,6 +3,42 @@ import numpy as np
 import random
 import copy
 import time
+import random
+import sys
+import math
+
+sys.setrecursionlimit(10000)
+
+def bubble_sort(A):
+    n = len(A)
+
+    flag = 1
+    for i in range(n-1):
+        flag = 0
+        for j in range(n-1-i):
+            if A[j]>A[j+1]:            
+                t = A[j]
+                A[j]=A[j+1]
+                A[j+1] = t
+                flag = 1
+
+        if flag == 0:
+            break
+    return A
+
+def bubble_sort_optimized(A):
+    n = len(A)
+    while n > 1:
+        newn = 0
+        for i in range(1, n):
+            if A[i-1] > A[i]:
+                # Échange des éléments
+                A[i-1], A[i] = A[i], A[i-1]
+                # Mise à jour de la position du dernier échange
+                newn = i
+        # Réduction de la portée du tri à la dernière position échangée
+        n = newn
+    return A
 
 def insertion_sort(A):
     n = len(A)
@@ -330,4 +366,79 @@ def insertion_sort(A):
             A[j + 1] = A[j]
             j -= 1
         A[j + 1] = key
+    return A
+
+def heapify(A, n, i):
+    largest = i  # On suppose que l'élément courant est le plus grand
+    left = 2 * i + 1  # Fils gauche
+    right = 2 * i + 2  # Fils droit
+
+    if left < n and A[left] > A[largest]:  # Si le fils gauche est plus grand
+        largest = left
+
+    if right < n and A[right] > A[largest]:  # Si le fils droit est plus grand
+        largest = right
+
+    if largest != i:  # Si l'un des fils est plus grand, on échange et on continue la réorganisation
+        A[i], A[largest] = A[largest], A[i]
+        heapify(A, n, largest)  # Appel récursif pour assurer la validité du tas
+
+def heap_sort(A):
+    n = len(A)
+    # On construit un tas max
+    for i in range(n // 2 - 1, -1, -1):
+        heapify(A, n, i)
+
+    # On extrait les éléments un par un
+    for i in range(n - 1, 0, -1):
+        A[i], A[0] = A[0], A[i]  # On place l'élément max en fin de tableau
+        heapify(A, i, 0)  # On réorganise le tas
+    return A
+
+
+def partition(A, start, end, cpt_comp, cpt_swap):
+    pivot = A[end]
+    i = start - 1
+
+    for j in range(start, end):
+        cpt_comp += 1  # comparaison entre A[j] et pivot
+        if A[j] <= pivot:
+            i += 1
+            A[i], A[j] = A[j], A[i]
+            cpt_swap += 1  # permutation
+
+    A[i + 1], A[end] = A[end], A[i + 1]
+    cpt_swap += 1  # permutation
+
+    return i + 1, cpt_comp, cpt_swap
+
+def quick_sort_with_stats(A, start, end, cpt_comp=0, cpt_swap=0):
+    if start < end:
+        pivot_index, cpt_comp, cpt_swap = partition(A, start, end, cpt_comp, cpt_swap)
+        cpt_comp, cpt_swap = quick_sort_with_stats(A, start, pivot_index - 1, cpt_comp, cpt_swap)
+        cpt_comp, cpt_swap = quick_sort_with_stats(A, pivot_index + 1, end, cpt_comp, cpt_swap)
+
+    return cpt_comp, cpt_swap
+
+def quick_sort_main_with_stats(A):
+    cpt_comp, cpt_swap = quick_sort_with_stats(A, 0, len(A) - 1)
+    return A, cpt_comp, cpt_swap
+
+def partition_default(A, start, end):
+    pivot = A[end]  # Le dernier élément est choisi comme pivot
+    iPivot = start  # L'indice du premier élément plus petit ou égal au pivot
+    for i in range(start, end):  # On parcourt la partie du tableau à partitionner
+        if A[i] <= pivot:  # Si l'élément est plus petit ou égal au pivot
+            A[i], A[iPivot] = A[iPivot], A[i]  # On le place avant le pivot
+            iPivot += 1  # On avance l'indice de la position pivot
+    A[iPivot], A[end] = A[end], A[iPivot]  # On place le pivot à sa position finale
+    return iPivot
+
+def quick_sort(A, start=0, end=None):
+    if end is None:
+        end = len(A) - 1  # Initialisation de la borne supérieure
+    if start < end:  # Si la sous-partie à trier contient au moins 2 éléments
+        iPivot = partition_default(A, start, end)  # Partitionnement autour du pivot
+        quick_sort(A, start, iPivot - 1)  # Tri récursif de la première partie
+        quick_sort(A, iPivot + 1, end)  # Tri récursif de la deuxième partie
     return A
