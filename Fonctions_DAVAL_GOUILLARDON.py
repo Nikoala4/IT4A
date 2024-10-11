@@ -275,6 +275,21 @@ def executerTri(fct_tri, color, nom, nlist=15, nval=200, surplace=True):
 
 # fonction mettant en concurrence une liste de fonctions de tri, pour un type de données (tableau random, trié, inversé, partiellement trié, avec doublons)
 def executerTriConcurrence(liste_fct_tri, liste_noms, liste_couleurs=['r', 'y', 'g', 'b', 'm','c'], nlist=15, nval=200, surplace=True, liste=['random', 'sorted', 'inverted', 'partial', 'duplicates']):
+    """
+    Exécute et compare plusieurs fonctions de tri sur différentes configurations de listes de données.
+    Args:
+        liste_fct_tri (list): Liste des fonctions de tri à comparer.
+        liste_noms (list): Liste des noms des fonctions de tri, utilisée pour l'affichage des légendes.
+        liste_couleurs (list, optional): Liste des couleurs pour les tracés des résultats. Par défaut ['r', 'y', 'g', 'b', 'm','c'].
+        nlist (int, optional): Nombre de listes à générer pour chaque type de données. Par défaut 15.
+        nval (int, optional): Nombre d'éléments dans chaque liste. Par défaut 200.
+        surplace (bool, optional): Indique si les fonctions de tri modifient les listes sur place. Par défaut True.
+        liste (list, optional): Liste des types de configurations de données à tester. Par défaut ['random', 'sorted', 'inverted', 'partial', 'duplicates'].
+    Returns:
+        None
+    Affiche:
+        Un graphique comparant les temps d'exécution des différentes fonctions de tri pour chaque type de configuration de données.
+    """
     axis, listDataRandom, listDataSorted, listDataInvertedSorted, listDataPartiallySorted, listDataWithDuplicates = create_data(nlist, nval)
 
     # Stockage des résultats pour les nouveaux cas
