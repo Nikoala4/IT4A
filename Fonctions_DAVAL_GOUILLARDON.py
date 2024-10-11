@@ -146,44 +146,6 @@ def calculer_cas_moyen_tri_insertion(fct_tri, type_donnees='random', nlist=15, n
 
     return operations_par_taille
 
-# fonction mettant en concurrence une liste de fonctions de tri, pour un type de données (tableau random, trié, inversé, partiellement trié, avec doublons)
-def executerTriConcurrence(liste_fct_tri, liste_noms, liste_couleurs=['r', 'y', 'g', 'b', 'm','c'], nlist=15, nval=200, surplace=True, liste=['random', 'sorted', 'inverted', 'partial', 'duplicates']):
-    axis, listDataRandom, listDataSorted, listDataInvertedSorted, listDataPartiallySorted, listDataWithDuplicates = create_data(nlist, nval)
-
-    # Stockage des résultats pour les nouveaux cas
-    toplot = {case: [[] for _ in range(len(liste_fct_tri))] for case in liste}
-
-    # Duplication des données pour préserver les listes originales
-    dataTest = {
-        'random': [copy.deepcopy(listDataRandom) for _ in range(len(liste_fct_tri))],
-        'sorted': [copy.deepcopy(listDataSorted) for _ in range(len(liste_fct_tri))],
-        'inverted': [copy.deepcopy(listDataInvertedSorted) for _ in range(len(liste_fct_tri))],
-        'partial': [copy.deepcopy(listDataPartiallySorted) for _ in range(len(liste_fct_tri))],
-        'duplicates': [copy.deepcopy(listDataWithDuplicates) for _ in range(len(liste_fct_tri))]
-    }
-    liste_symboles = {'random':'-', 'sorted':'--','inverted':':','partial': '-.','duplicates': '-'}
-
-    # Boucle sur les tailles d'axes
-    for i in range(len(axis)):
-        # Mesure des temps pour chaque cas
-        for case in liste:
-            for j in range(len(liste_fct_tri)):
-                time1 = time.time()
-                if surplace:
-                    liste_fct_tri[j](dataTest[case][j][i])
-                else:
-                    dataTest[case][j][i] = liste_fct_tri[j](dataTest[case][j][i])
-                time2 = time.time()
-                toplot[case][j].append(time2 - time1)
-
-    # Tracé des résultats pour chaque type de données
-    for case in liste:
-        for i in range(len(liste_fct_tri)):
-            plt.plot(axis, toplot[case][i], liste_symboles[case] + liste_couleurs[i], label=liste_noms[i] + ' (' + case + ')')
-    plt.legend()
-    plt.show()
-
-
 def calculer_cas_moyen_avec_stats(fct_tri, type_donnees='random', nlist=15, nval=200):
     comparaisons_par_taille = []
     permutations_par_taille = []
